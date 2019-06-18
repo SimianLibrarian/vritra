@@ -120,7 +120,7 @@ class VolumeReconstructor:
         plt.subplot(133),plt.imshow(resized),plt.axis('off')
         plt.show()
     
-    def detection_silent(self,fname,ofname,mode='a'):
+    def detection_silent(self,fname,ofname,mode='a',filename=''):
         if type(fname)==str:
             img=cv2.imread(fname) #image importation
             resized = imutils.resize(img, width=800) 
@@ -155,7 +155,11 @@ class VolumeReconstructor:
                 cY = int((M["m01"] / M["m00"]))
                 cv2.drawContours(rs, c, -1, (rng.randint(0,256),rng.randint(0,256),rng.randint(0,256)), 2)
                 cv2.circle(rs,(cX,cY),3, (255,0,0), -1)
-                f.write(str(float(cX)/len(rs))+' '+str(float(cY)/len(rs[0]))+'\n')
+                sec_c,sec_r=cv2.minEnclosingCircle(c)
+#                f.write(''.join([s for s in filename if s.isdigit()==True ])+' '+str(float(cX)/len(rs))+' '+str(float(cY)/len(rs[0]))+'\n')
+                f.write(''.join([s for s in filename if s.isdigit()==True ])+' '
+                        +str(float(sec_c[0])/len(rs))+' '+str(float(sec_c[1])/len(rs[0]))
+                        +' '+str(float(sec_r)/len(rs[0]))+' '+'\n')
             else:
                 labels[labels==label]=0
         f.close()
