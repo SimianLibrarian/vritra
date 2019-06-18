@@ -13,11 +13,18 @@ args = vars(ap.parse_args())
 #outfile=args["output"]
 f=open(args["output"],"a")
 image=cv2.imread(args["image"])
-resized = imutils.resize(image, width=300)
+resized = imutils.resize(image, width=800)
 ratio = image.shape[0] / float(resized.shape[0])
 gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-thresh = cv2.threshold(blurred, 140, 255, cv2.THRESH_BINARY)[1]
+#blurred = cv2.GaussianBlur(gray, (4,4), 0)
+#blurred=cv2.blur(gray,(5,5))
+blurred=cv2.medianBlur(gray,7)
+#blurred=gray
+#thresh = cv2.threshold(blurred, 160, 255, cv2.THRESH_BINARY)[1]
+ret, thresh = cv2.threshold(blurred,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+thresh=255-thresh
+cv2.imshow("thresh",thresh),cv2.waitKey(2000)
+
 #thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY)[1]
 f.write("# "+str(len(resized))+" "+str(len(resized[0]))+"\n")
 cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
